@@ -1,5 +1,44 @@
+import { useRef } from 'react';
 import { Row, Container, Col, Card, Form, Button } from 'react-bootstrap';
 const AuthForm = () => {
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
+  const confirmpasswordRef = useRef();
+
+  const formSubmitHandler = (event) => {
+    event.preventDefault();
+    const enteredEmail = emailInputRef.current.value;
+    const enteredPassword = passwordInputRef.current.value;
+   
+    console.log('signup')
+
+    const signupuri = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBKniczVLNJrXICnBbwj2W29ttGPgAtKCY'
+
+    fetch(signupuri, {
+      method: 'POST',
+      body: JSON.stringify({
+        email: enteredEmail,
+        password: enteredPassword,
+        returnSecureToken: true,
+      }),
+      headers: {
+        'Content-Type' : 'application/json'
+      }
+    }).then((res) => {
+      if(res.ok){
+        console.log('User has successfully signedup')
+      }
+      else{
+        return res.json().then((data) => {
+          let errorMessage = 'Authentication failed!';
+          if( data && data.error && data.error.message){
+            errorMessage = data.error.message;
+          }
+          alert(errorMessage);
+        })
+      }
+    })
+  }
   return (
     <Container>
       <Row className="vh-100 d-flex justify-content-center align-items-center">
@@ -14,12 +53,12 @@ const AuthForm = () => {
                 <p className="mb-5 text-center text-muted">
                   Please enter your credentials!
                 </p>
-                <Form className="mb-3">
+                <Form className="mb-3" onSubmit={formSubmitHandler}>
                   <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label className="text-center">
                       Email address
                     </Form.Label>
-                    <Form.Control type="email" placeholder="Enter email" />
+                    <Form.Control type="email" placeholder="Enter email" required ref={emailInputRef}/>
                   </Form.Group>
 
                   <Form.Group className="mb-3">
@@ -27,6 +66,8 @@ const AuthForm = () => {
                     <Form.Control
                       type="password"
                       placeholder="Enter password"
+                      required
+                      ref={passwordInputRef}
                     />
                   </Form.Group>
 
@@ -35,6 +76,8 @@ const AuthForm = () => {
                     <Form.Control
                       type="password"
                       placeholder="Confirm password"
+                      required
+                      ref={confirmpasswordRef}
                     />
                   </Form.Group>
                   <div className="mb-3">
