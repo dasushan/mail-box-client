@@ -27,6 +27,10 @@ const AuthForm = () => {
     }).then((res) => {
       if(res.ok){
         console.log('User has successfully signedup')
+        return res.json().then((data) =>{
+          console.log(data);
+          console.log(data.email)
+        })
       }
       else{
         return res.json().then((data) => {
