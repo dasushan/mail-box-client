@@ -1,6 +1,10 @@
 import { useRef } from 'react';
 import { Row, Container, Col, Card, Form, Button } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+
 const AuthForm = () => {
+  const navigate = useNavigate();
+
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
   const confirmpasswordRef = useRef();
@@ -30,6 +34,8 @@ const AuthForm = () => {
         return res.json().then((data) =>{
           console.log(data);
           console.log(data.email)
+          alert('You have succesfully signedup')
+          navigate('/signin', {replace: true})
         })
       }
       else{
@@ -84,13 +90,13 @@ const AuthForm = () => {
                       ref={confirmpasswordRef}
                     />
                   </Form.Group>
-                  <div className="mb-3">
+                  {/* <div className="mb-3">
                     <p className="small">
                       <a className="text-primary" href="/">
                         Forgot password?
                       </a>
                     </p>
-                  </div>
+                  </div> */}
                   <div className="d-grid">
                     <Button variant="primary" type="submit">
                       Signup
@@ -100,7 +106,7 @@ const AuthForm = () => {
                 <div>
                     <p className='mb-0 text-center'>
                          Have an account?{' '}
-                        <a href='/' className='text-primary fw-bold'>Login</a>
+                        <Link to='/signin' className='text-primary fw-bold'>LogIn</Link>
                     </p>
                 </div>
               </div>
