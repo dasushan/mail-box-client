@@ -1,15 +1,30 @@
-import React from 'react';
-import {  EditorState, RichUtils } from 'draft-js';
-import Editor from '@draft-js-plugins/editor'
+import React, { Component } from 'react';
+import { EditorState, RichUtils } from 'draft-js';
+// It is important to import the Editor which accepts plugins
+import Editor from '@draft-js-plugins/editor';
+import createEmojiPlugin from '@draft-js-plugins/emoji';
+import '@draft-js-plugins/emoji/lib/plugin.css';
 import { Button } from 'react-bootstrap';
 
-class PageContainer extends React.Component {
+//Creates an Instance. At this step, a configuration object can be passed in as an argument
+const emojiPlugin = createEmojiPlugin();
+const { EmojiSuggestions, EmojiSelect } = emojiPlugin;
+
+// The Editor accepts an array of plugins. In this case, only the emojiPlugin is
+// passed in, although it is possible to pass in multiple plugins.
+// The EmojiSuggestions component is internally connected to the editor and will
+// be updated & positioned once the user starts the autocompletion with a colon.
+// The EmojiSelect component also is internally connected to the editor. He add
+// a button which allows open emoji select popup.
+
+class PageContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
       editorState: EditorState.createEmpty(),
     };
   }
+
   onChange = (editorState) => {
     this.setState({
       editorState,
@@ -53,12 +68,14 @@ class PageContainer extends React.Component {
   render() {
     return (
       <div className="container border border-info border-1 p-3 bg-dark">
-        <div className='bg-light '>
+        <div className="bg-light ">
           <Editor
             editorState={this.state.editorState}
             handleKeyCommand={this.handleKeyCommand}
             onChange={this.onChange}
+            plugins={[emojiPlugin]}
           />
+          <EmojiSuggestions />
         </div>
 
         <div className="controls">
@@ -71,6 +88,9 @@ class PageContainer extends React.Component {
           <Button onClick={this.onItalicClick} className="m-1">
             <em>I</em>
           </Button>
+          <div >
+            <EmojiSelect />
+          </div>
         </div>
       </div>
     );
