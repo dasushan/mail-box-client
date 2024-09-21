@@ -4,6 +4,7 @@ import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Welcome from './pages/Welcome';
 import TextEditor from './components/Editor/TextEditor';
+import PageContainer from './components/RichTextEditor/PageContainer';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path='/signin' element={<Login />}/>
         <Route path='/welcome' element={<Welcome />}>
           <Route path='email' element={<TextEditor/>}/>
+          <Route path='editor' element={<PageContainer />}/>
         </Route>
       </Routes>
     </BrowserRouter>
