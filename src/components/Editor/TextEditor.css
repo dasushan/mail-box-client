@@ -1,0 +1,43 @@
+.wrapper-class {
+  display: flex;
+  
+  flex-direction: column-reverse;
+  
+  align-items: space-between;
+  border: 1px solid red;
+  min-height: 80vh;
+  margin-bottom: 3rem;
+}
+.editor-class {
+ flex: 1;
+  max-height: 30rem;
+}
+.toolbar-class {
+    align-self: last baseline;
+}
+ 
+.subject{
+    border-bottom: 1px solid slategrey;
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    
+    margin-bottom: 1rem;
+}
+.subject input{
+    
+    border: none;
+}
+
+.subject input:focus{
+    outline: none;
+    box-shadow: none;
+}
+.address{
+    display: grid;
+
+}
+
+.address-wrapper{
+    display: flex;
+}
