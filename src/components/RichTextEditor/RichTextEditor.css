@@ -1,0 +1,43 @@
+.wrapperclass {
+  
+  min-height: 25rem;
+
+  background-color: white;
+}
+
+.editorclass {
+  min-height: 20rem;
+  max-height: 30rem;
+  cursor: pointer;
+  border-bottom: 1px solid rgb(200, 204, 207);
+  padding: 0.5rem;
+  overflow-y: auto;
+}
+
+.controls {
+  margin: 1rem 0;
+}
+
+.address {
+  border-bottom: 1px solid rgb(200, 204, 207);
+}
+.address input {
+  border: none;
+  padding: 0.5rem;
+}
+.address input:focus {
+  outline: none;
+  box-shadow: none;
+}
+.subject {
+  border-bottom: 1px solid rgb(200, 204, 207);
+}
+.subject input {
+  border: none;
+  padding: 0.5rem;
+}
+
+.subject input:focus {
+  outline: none;
+  box-shadow: none;
+}

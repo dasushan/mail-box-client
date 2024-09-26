@@ -7,6 +7,7 @@ import '@draft-js-plugins/emoji/lib/plugin.css';
 import createHighlightPlugin from './plugins/highlightPlugin';
 import { Button } from 'react-bootstrap';
 
+import debounce from 'lodash/debounce'
 //Creates an Instance. At this step, a configuration object can be passed in as an argument
 const emojiPlugin = createEmojiPlugin();
 const { EmojiSuggestions, EmojiSelect } = emojiPlugin;
@@ -23,25 +24,45 @@ const highlightPlugin = createHighlightPlugin();
 
 class PageContainer extends Component {
   constructor(props) {
+
     super(props);
     this.state = {};
 
-    const content = window.localStorage.getItem('content');
-    console.log(content)
+    // const content = window.localStorage.getItem('content');
+    // console.log(content)
 
-    if(content){
-        this.state.editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(content)))
-    } else{
-        this.state.editorState = EditorState.createEmpty();
-    }
+    // if(content){
+    //     this.state.editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(content)))
+    // } else{
+    //     this.state.editorState = EditorState.createEmpty();
+    // }
   }
 
-  saveContent = (content) => {
-    window.localStorage.setItem(
-      'content',
-      JSON.stringify(convertToRaw(content))
-    );
-  };
+  componentDidMount() {
+    fetch('https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/content.json', { method: 'GET' }).then((val) => {
+      val.json();
+    }).then(rawContent => {
+        if(rawContent){
+            this.setState({editorState: EditorState.createWithContent(convertFromRaw(rawContent))})
+        } else{
+            this.setState({editorState: EditorState.createEmpty()})
+        }
+    })
+  }
+
+  saveContent = debounce((content) => {
+    // window.localStorage.setItem(
+    //   'content',
+    //   JSON.stringify(convertToRaw(content))
+    // );
+    fetch('https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/contentemail1.json', {
+      method: 'POST',
+      body: JSON.stringify({ content: convertToRaw(content) }),
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+    });
+  }, 1000);
 
   onChange = (editorState) => {
     const contentState = editorState.getCurrentContent();
@@ -50,6 +71,7 @@ class PageContainer extends Component {
       editorState,
     });
   };
+
   handleKeyCommand = (command) => {
     const newState = RichUtils.handleKeyCommand(
       this.state.editorState,
@@ -97,6 +119,11 @@ class PageContainer extends Component {
   };
 
   render() {
+    if(!this.state.editorState){
+        return(
+            <h3>Loading...</h3>
+        )
+    }
     return (
       <div className="container border border-info border-1 p-3 bg-dark">
         <div className="bg-light ">
