@@ -8,6 +8,9 @@ import { Button } from 'react-bootstrap';
 import debounce from 'lodash/debounce';
 import './RichTextEditor.css';
 
+import { editorActions } from '../../store/editor-slice';
+import { useSelector, useDispatch } from 'react-redux';
+
 // Create an instance of the emoji plugin
 const emojiPlugin = createEmojiPlugin();
 const { EmojiSuggestions, EmojiSelect } = emojiPlugin;
@@ -16,36 +19,53 @@ const { EmojiSuggestions, EmojiSelect } = emojiPlugin;
 const highlightPlugin = createHighlightPlugin();
 
 const RichTextEditor = () => {
-  const [editorState, setEditorState] = useState(() =>
-    EditorState.createEmpty()
-  );
+  const editorState = useSelector((state) => state.editor.editorState);
+  const dispatch = useDispatch();
+
+  // const [editorState, setEditorState] = useState(() =>
+  //   EditorState.createEmpty()
+  // );
+
   const [loading, setLoading] = useState(true);
 
   // Fetch content from backend when component mount
+  // useEffect(() => {
+  //   fetch(
+  //     'https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/content.json',
+  //     {
+  //       method: 'GET',
+  //     }
+  //   )
+  //     .then((val) => {
+  //       val.json();
+  //     })
+  //     .then((rawContent) => {
+  //       if (rawContent) {
+  //         setEditorState(
+  //           EditorState.createWithContent(convertFromRaw(rawContent))
+  //         );
+  //       } else {
+  //         setEditorState(EditorState.createEmpty());
+  //       }
+  //       setLoading(false);
+  //     })
+  //     .catch(() => {
+  //       setLoading(false);
+  //     });
+  // }, []);
+
+  // Fetch content from localStorage
   useEffect(() => {
-    fetch(
-      'https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/content.json',
-      {
-        method: 'GET',
-      }
-    )
-      .then((val) => {
-        val.json();
-      })
-      .then((rawContent) => {
-        if (rawContent) {
-          setEditorState(
-            EditorState.createWithContent(convertFromRaw(rawContent))
-          );
-        } else {
-          setEditorState(EditorState.createEmpty());
-        }
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-  }, []);
+    const data = localStorage.getItem('content');
+    if (data) {
+      const rawContent = JSON.parse(data);
+      console.log(rawContent);
+      const loadedEditorState = EditorState.createWithContent(
+        convertFromRaw(rawContent)
+      );
+      handleEditorChange(loadedEditorState);
+    }
+  }, []); 
 
   // Save content to backend
   const saveContent = useCallback(
@@ -60,29 +80,41 @@ const RichTextEditor = () => {
       //     }),
       //   }
       // );
-      window.localStorage.setItem('content', JSON.stringify(convertToRaw(content)))
+      window.localStorage.setItem(
+        'content',
+        JSON.stringify(convertToRaw(content))
+      );
     }, 1000),
     []
   );
 
-  // 
+  //
   const emailSubmitHandler = () => {
-    
     const content = window.localStorage.getItem('content');
-    console.log(content);
-  }
+    const loadedContent = editorState.getCurrentContent();
+    console.log(convertToRaw(loadedContent))
+    console.log(content)
+    console.log(JSON.parse(content))
+  };
   // On editor change
-  const onChange = (newEditorState) => {
+  // const onChange = (newEditorState) => {
+  //   const contentState = newEditorState.getCurrentContent();
+  //   saveContent(contentState);
+  //   // setEditorState(newEditorState);
+  //   dispatch(onChange(newEditorState))
+  // };
+
+  const handleEditorChange = (newEditorState) => {
+    dispatch(editorActions.onChange(newEditorState));
     const contentState = newEditorState.getCurrentContent();
     saveContent(contentState);
-    setEditorState(newEditorState);
   };
 
   // Handle key commands
   const handleKeyCommand = (command) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
-      onChange(newState);
+      handleEditorChange(newState);
       return 'handled';
     }
     return 'not-handled';
@@ -91,17 +123,18 @@ const RichTextEditor = () => {
   // Toggling Inline Styles
   const toggleInlineStyle = (style) => {
     const newState = RichUtils.toggleInlineStyle(editorState, style);
-    onChange(newState);
+    handleEditorChange(newState);
   };
 
   // Toggling Code Block
   const onToggleCode = () => {
-    onChange(RichUtils.toggleCode(editorState));
+    const newState = RichUtils.toggleCode(editorState);
+    handleEditorChange(newState);
   };
 
-  if (loading) {
-    return <h3>Loading ...</h3>;
-  }
+  // if (loading) {
+  //   return <h3>Loading ...</h3>;
+  // }
 
   return (
     <div className="container mb-1">
@@ -116,7 +149,7 @@ const RichTextEditor = () => {
         <div className="editorclass">
           <Editor
             editorState={editorState}
-            onChange={onChange}
+            onChange={handleEditorChange}
             handleKeyCommand={handleKeyCommand}
             plugins={[emojiPlugin, highlightPlugin]}
           />
@@ -124,7 +157,9 @@ const RichTextEditor = () => {
         </div>
 
         <div className="controls">
-          <Button className='m-1'  onClick={emailSubmitHandler}>Send</Button>
+          <Button className="m-1" onClick={emailSubmitHandler}>
+            Send
+          </Button>
           <Button
             onClick={() => toggleInlineStyle('UNDERLINE')}
             className="m-1"
