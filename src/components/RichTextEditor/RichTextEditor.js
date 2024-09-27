@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import createEmojiPlugin from '@draft-js-plugins/emoji';
@@ -27,6 +27,8 @@ const RichTextEditor = () => {
   // );
 
   const [loading, setLoading] = useState(true);
+  const emailInputRef = useRef();
+  const subjectInputRef = useRef();
 
   // Fetch content from backend when component mount
   // useEffect(() => {
@@ -90,11 +92,32 @@ const RichTextEditor = () => {
 
   //
   const emailSubmitHandler = () => {
-    const content = window.localStorage.getItem('content');
+    // const content = window.localStorage.getItem('content');
     const loadedContent = editorState.getCurrentContent();
     console.log(convertToRaw(loadedContent))
-    console.log(content)
-    console.log(JSON.parse(content))
+    // console.log(content)
+    // console.log(JSON.parse(content))
+    const enteredEmail = emailInputRef.current.value;
+    const enteredSubject = subjectInputRef.current.value;
+    const document = {
+      email: enteredEmail,
+      subject: enteredSubject,
+      content: convertToRaw(loadedContent)
+    }
+    // const username = email ? email.replace(/[@ .]/g, '') : '';
+    const receiver = enteredEmail ? enteredEmail.replace(/[@ .]/g, '') : '';
+    fetch(`https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/receiver/${receiver}.json`, {
+      method: 'POST',
+      body: JSON.stringify(document),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then((response) => {
+      response.json();
+    }).then((result) => {
+      console.log(result)
+    })
+    
   };
   // On editor change
   // const onChange = (newEditorState) => {
@@ -139,11 +162,11 @@ const RichTextEditor = () => {
   return (
     <div className="container mb-1">
       <div className="address">
-        <input type="text" placeholder="To" />
+        <input type="text" placeholder="To" ref={emailInputRef} required/>
       </div>
 
       <div className="subject">
-        <input type="text" placeholder="Subject" />
+        <input type="text" placeholder="Subject" ref={subjectInputRef} required/>
       </div>
       <div className=" wrapperclass">
         <div className="editorclass">
