@@ -1,0 +1,36 @@
+.customW15{
+    width: 15%;
+}
+.customBG{
+    background-color: #C2E7FF;
+}
+.customBORDERRADIUS{
+    border: none;
+    border-radius: 1rem;
+}
+.customHOVER{
+    transition: box-shadow 0.3s ease;
+}
+.customHOVER:hover{
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+.customTEXTCOLOR500{
+    color: #6b7280;
+  line-height: 2rem;
+}
+.customBORDERRADIUSRIGHT{
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+}
+.customHOVERPOINTER{
+    transition: cursor 0.2s;
+}
+.customHOVERPOINTER:hover{
+     cursor: pointer;
+}
+.customHOVERBG{
+    transition: background-color 0.2s;
+}
+.customHOVERBG:hover{
+    background-color: #e2e8f0;
+}

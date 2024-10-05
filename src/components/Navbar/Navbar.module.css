@@ -34,6 +34,6 @@
 .customBGGRAY100HOVER {
   transition: background-color 0.2s;
 }
-.customBGGRAY100HOVER {
+.customBGGRAY100HOVER:hover {
   background-color: #f3f4f6;
 }
