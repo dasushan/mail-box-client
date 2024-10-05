@@ -1,0 +1,39 @@
+.customH16 {
+  height: 4rem;
+  
+}
+.customGAP10 {
+  gap: 40px;
+}
+.customHOVER {
+  transition: background-color 0.2s;
+}
+.customHOVER:hover {
+  background-color: #f8f9fa;
+}
+.customW8 {
+  width: 2rem;
+}
+.customTEXTCOLOR500 {
+  color: #6b7280;
+  line-height: 2rem;
+}
+.customMARGINRIGHT60 {
+  margin-right: 15rem;
+}
+.customBG {
+  background-color: #eaf1fb;
+}
+.customTEXTCOLOR700 {
+  color: #4b5563;
+}
+.customOUTLINENONE {
+  outline: none;
+  border: none;
+}
+.customBGGRAY100HOVER {
+  transition: background-color 0.2s;
+}
+.customBGGRAY100HOVER {
+  background-color: #f3f4f6;
+}
