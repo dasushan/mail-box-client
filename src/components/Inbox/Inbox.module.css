@@ -1,0 +1,29 @@
+.customBORDERRADIUS{
+    border-radius: 1rem;
+}
+.customTEXTCOLOR700{
+    color: '#374151'
+}
+.customHOVERBG{
+    transition: background-color 0.1s;
+    background-color: white;
+}
+.customHOVERBG:hover{
+    background-color: #f3f4f6;
+}
+.customHOVERPOINTER{
+    transition: cursor 0.1s;
+}
+.customHOVERPOINTER:hover{
+    cursor: pointer;
+}
+.customBORDERBLUE{
+    border:none;
+    border-bottom: 4px solid blue;
+    border-color: #3182ce;
+    color: #3182ce
+}
+.customBORDERNONE{
+    border:none;
+    border-bottom: 4px solid transparent;
+}
