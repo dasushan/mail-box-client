@@ -19,6 +19,7 @@ const { EmojiSuggestions, EmojiSelect } = emojiPlugin;
 const highlightPlugin = createHighlightPlugin();
 
 const RichTextEditor = () => {
+  const senderEmailId = useSelector((state) => state.auth.emailId);
   const editorState = useSelector((state) => state.editor.editorState);
   const dispatch = useDispatch();
 
@@ -27,7 +28,7 @@ const RichTextEditor = () => {
   // );
 
   const [loading, setLoading] = useState(true);
-  const emailInputRef = useRef();
+  const receiverEmailInputRef = useRef();
   const subjectInputRef = useRef();
 
   // Fetch content from backend when component mount
@@ -61,27 +62,100 @@ const RichTextEditor = () => {
     const data = localStorage.getItem('content');
     if (data) {
       const rawContent = JSON.parse(data);
-      console.log(rawContent);
       const loadedEditorState = EditorState.createWithContent(
         convertFromRaw(rawContent)
       );
       handleEditorChange(loadedEditorState);
     }
-  }, []); 
+  }, []);
 
-  // Save content to backend
+  // send email
+  const emailSubmitHandler = () => {
+    // const content = window.localStorage.getItem('content');
+    // console.log(content)
+    // console.log(JSON.parse(content))
+
+    const loadedContent = getContent();
+    console.log(loadedContent);
+
+    const receiverEmail = receiverEmailInputRef.current.value;
+    const enteredSubject = subjectInputRef.current.value;
+    const document = {
+      to: receiverEmail,
+      subject: enteredSubject,
+      message: loadedContent,
+      sender: senderEmailId,
+    };
+    // const username = email ? email.replace(/[@ .]/g, '') : '';
+    const receiver = receiverEmail ? receiverEmail.replace(/[@ .]/g, '') : '';
+    const sender = senderEmailId ? senderEmailId.replace(/[@ .]/g, '') : '';
+    fetch(
+      `https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/${receiver}/inbox.json`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ sender: senderEmailId, document }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+      .then((response) => {
+        response.json();
+      })
+      .then((result) => {
+        console.log(result);
+        // fetch(
+        //   `https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/${sender}/sent.json`,
+        //   {
+        //     method: 'POST',
+        //     body: JSON.stringify({ receiver: receiverEmail, document }),
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //     },
+        //   }
+        // )
+        //   .then((response) => {
+        //     response.json();
+        //   })
+        //   .then((result) => {
+        //     console.log(result);
+        //   });
+      });
+
+    fetch(
+      `https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/${sender}/sent.json`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ receiver: receiverEmail, document }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+      .then((response) => {
+        response.json();
+      })
+      .then((result) => {
+        console.log(result);
+      });
+  };
+
+  // Get textual content of the editor
+  const getContent = () => {
+    const contentState = editorState.getCurrentContent();
+    const blocks = convertToRaw(contentState).blocks;
+    const text = [];
+    blocks.forEach((block) => {
+      text.push(block.text);
+    })
+    const res = text.join(" ").trim();
+    console.log(res)
+    return res;
+  }
+
+  // Save content to localStorage
   const saveContent = useCallback(
     debounce((content) => {
-      // fetch(
-      //   'https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/content.json',
-      //   {
-      //     method: 'POST',
-      //     body: JSON.stringify({ content: convertToRaw(content) }),
-      //     headers: new Headers({
-      //       'Content-Type': 'application/json',
-      //     }),
-      //   }
-      // );
       window.localStorage.setItem(
         'content',
         JSON.stringify(convertToRaw(content))
@@ -90,47 +164,13 @@ const RichTextEditor = () => {
     []
   );
 
-  //
-  const emailSubmitHandler = () => {
-    // const content = window.localStorage.getItem('content');
-    const loadedContent = editorState.getCurrentContent();
-    console.log(convertToRaw(loadedContent))
-    // console.log(content)
-    // console.log(JSON.parse(content))
-    const enteredEmail = emailInputRef.current.value;
-    const enteredSubject = subjectInputRef.current.value;
-    const document = {
-      email: enteredEmail,
-      subject: enteredSubject,
-      content: convertToRaw(loadedContent)
-    }
-    // const username = email ? email.replace(/[@ .]/g, '') : '';
-    const receiver = enteredEmail ? enteredEmail.replace(/[@ .]/g, '') : '';
-    fetch(`https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/receiver/${receiver}.json`, {
-      method: 'POST',
-      body: JSON.stringify(document),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((response) => {
-      response.json();
-    }).then((result) => {
-      console.log(result)
-    })
-    
-  };
   // On editor change
-  // const onChange = (newEditorState) => {
-  //   const contentState = newEditorState.getCurrentContent();
-  //   saveContent(contentState);
-  //   // setEditorState(newEditorState);
-  //   dispatch(onChange(newEditorState))
-  // };
-
   const handleEditorChange = (newEditorState) => {
-    dispatch(editorActions.onChange(newEditorState));
     const contentState = newEditorState.getCurrentContent();
+    // localStorage
     saveContent(contentState);
+    // redux global state
+    dispatch(editorActions.onChange(newEditorState));
   };
 
   // Handle key commands
@@ -162,11 +202,21 @@ const RichTextEditor = () => {
   return (
     <div className="container mb-1">
       <div className="address">
-        <input type="text" placeholder="To" ref={emailInputRef} required/>
+        <input
+          type="text"
+          placeholder="To"
+          ref={receiverEmailInputRef}
+          required
+        />
       </div>
 
       <div className="subject">
-        <input type="text" placeholder="Subject" ref={subjectInputRef} required/>
+        <input
+          type="text"
+          placeholder="Subject"
+          ref={subjectInputRef}
+          required
+        />
       </div>
       <div className=" wrapperclass">
         <div className="editorclass">
