@@ -1,0 +1,21 @@
+.customBORDERGRAY200{
+    border-color: #e5e7eb;
+}
+.customHOVERPOINTER{
+    transition: cursor 0.1s;
+}
+.customHOVERPOINTER:hover{
+    cursor: pointer;
+}
+.customHOVERSHADOW{
+    transition: box-shadow 0.2s;
+    
+
+}
+.customHOVERSHADOW:hover{
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+    
+}
+
+
+
