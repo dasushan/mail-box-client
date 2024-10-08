@@ -10,6 +10,8 @@ import './RichTextEditor.css';
 
 import { editorActions } from '../../store/editor-slice';
 import { useSelector, useDispatch } from 'react-redux';
+import { v4 as uuidv4} from 'uuid';
+import { useNavigate } from 'react-router-dom';
 
 // Create an instance of the emoji plugin
 const emojiPlugin = createEmojiPlugin();
@@ -30,6 +32,8 @@ const RichTextEditor = () => {
   const [loading, setLoading] = useState(true);
   const receiverEmailInputRef = useRef();
   const subjectInputRef = useRef();
+  
+  const navigate = useNavigate();
 
   // Fetch content from backend when component mount
   // useEffect(() => {
@@ -85,6 +89,8 @@ const RichTextEditor = () => {
       subject: enteredSubject,
       message: loadedContent,
       sender: senderEmailId,
+      id: uuidv4(),
+      createdAt: Date.now()
     };
     // const username = email ? email.replace(/[@ .]/g, '') : '';
     const receiver = receiverEmail ? receiverEmail.replace(/[@ .]/g, '') : '';
@@ -137,7 +143,9 @@ const RichTextEditor = () => {
       })
       .then((result) => {
         console.log(result);
+        navigate('/welcome', {replace:true })
       });
+      
   };
 
   // Get textual content of the editor
