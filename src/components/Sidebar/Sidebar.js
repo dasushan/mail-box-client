@@ -9,11 +9,11 @@ import {
 } from 'react-icons/md';
 import { TbSend2 } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
+
+import { useSelector } from 'react-redux';
+
 const sidebarItems = [
-  {
-    icon: <LuPencil style={{ fontSize: '24px' }} />,
-    text: 'Inbox',
-  },
+  
   {
     icon: <IoMdStar style={{ fontSize: '24px' }} />,
     text: 'Starred',
@@ -36,12 +36,19 @@ const sidebarItems = [
   },
 ];
 const Sidebar = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const emails = useSelector((state) => state.emails.emails);
+  let count = 0;
+  emails.forEach((email) => {
+    if(email.read === false){
+      count++;
+    }
+  })
   return (
     <div className={`${classes.customW15}`}>
       <div className={`p-3`}>
         <button
-        onClick={() => navigate('/welcome/email')}
+          onClick={() => navigate('/welcome/email')}
           className={`d-flex align-items-center gap-2 p-3 ${classes.customBORDERRADIUS} ${classes.customBG} ${classes.customHOVER}`}
         >
           <LuPencil style={{ fontSize: '24px' }} />
@@ -49,16 +56,26 @@ const Sidebar = () => {
         </button>
       </div>
       <div className={`${classes.customTEXTCOLOR500}`}>
+        <div
+          className={`d-flex align-items-center gap-3  py-1  ${classes.customBORDERRADIUSRIGHT} ${classes.customHOVERPOINTER}  ${classes.customHOVERBG} my-2 mx-4`}
+        >
+          <LuPencil style={{ fontSize: '24px' }} />
+          Inbox
+          <span className={`bg-info px-1 rounded-pill text-dark`}>{count}</span>
+        </div>
+      </div>
+      <div className={`${classes.customTEXTCOLOR500}`}>
         {sidebarItems.map((item) => {
           return (
-            <div className={`d-flex align-items-center gap-3  py-1  ${classes.customBORDERRADIUSRIGHT} ${classes.customHOVERPOINTER}  ${classes.customHOVERBG} my-2 mx-4`}>
+            <div
+              className={`d-flex align-items-center gap-3  py-1  ${classes.customBORDERRADIUSRIGHT} ${classes.customHOVERPOINTER}  ${classes.customHOVERBG} my-2 mx-4`}
+            >
               {item.icon}
               {item.text}
             </div>
           );
         })}
       </div>
-      
     </div>
   );
 };
