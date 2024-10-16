@@ -10,15 +10,37 @@ import {
   MdOutlineAddTask,
   MdOutlineDriveFileMove,
 } from 'react-icons/md';
-import { BiArchive, BiArchiveIn } from 'react-icons/bi';
+import {  BiArchiveIn } from 'react-icons/bi';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const Mail = () => {
   const selectedEmail = useSelector((state) => state.emails.selectedEmail);
-  console.log(selectedEmail);
+  const emailId = useSelector((state) => state.auth.emailId);
   const navigate = useNavigate();
 
+  const deleteMailById = () => {
+  const email = emailId? emailId.replace(/[@ .]/g, '') : '';
+    fetch(`https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/${email}.json`, {
+      method: 'GET'
+    }).then(async (response) => {
+      const result = await response.json();
+      let keY = null;
+      for(const [key, value] of Object.entries(result.inbox)){
+        if(value.document.id === selectedEmail.document.id){
+          keY = key;
+          
+        }
+      }
+      fetch(`https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/${email}/inbox/${keY}.json`, {
+        method: 'DELETE'
+      }).then( async (response) => {
+        const result = await response.json();
+        console.log(result);
+        navigate('/welcome')
+      })
+    })
+  }
   return (
     <div className={`flex-grow-1 bg-white ${classes.customROUNDEDFULL} mx-4`}>
       <div className={`d-flex align-items-center justify-content-between px-3`}>
@@ -47,6 +69,14 @@ const Mail = () => {
             <MdOutlineMarkEmailUnread style={{ fontSize: '20px' }} />
           </div>
           <div
+            onClick={() => {
+              deleteMailById();
+            }}
+            className={`p-2 rounded-pill ${classes.customHOVERBG} ${classes.customHOVERPOINTER}`}
+          >
+            <MdDeleteOutline size={'20px'} />
+          </div>
+          <div
             className={`p-2 rounded-pill ${classes.customHOVERBG} ${classes.customHOVERPOINTER}`}
           >
             <MdOutlineWatchLater style={{ fontSize: '20px' }} />
@@ -66,6 +96,7 @@ const Mail = () => {
           >
             <IoMdMore style={{ fontSize: '20px' }} />
           </div>
+          
         </div>
         <div className={`d-flex align-items-center gap-2`}>
         <button className={`rounded-pill ${classes.customHOVERBUTTONBG}`}>
