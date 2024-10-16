@@ -12,6 +12,7 @@ import { editorActions } from '../../store/editor-slice';
 import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4} from 'uuid';
 import { useNavigate } from 'react-router-dom';
+import { FaBedPulse } from 'react-icons/fa6';
 
 // Create an instance of the emoji plugin
 const emojiPlugin = createEmojiPlugin();
@@ -99,7 +100,7 @@ const RichTextEditor = () => {
       `https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/${receiver}/inbox.json`,
       {
         method: 'POST',
-        body: JSON.stringify({ sender: senderEmailId, document }),
+        body: JSON.stringify({ sender: senderEmailId, document, read: false }),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -132,7 +133,7 @@ const RichTextEditor = () => {
       `https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/${sender}/sent.json`,
       {
         method: 'POST',
-        body: JSON.stringify({ receiver: receiverEmail, document }),
+        body: JSON.stringify({ receiver: receiverEmail, document, read: false }),
         headers: {
           'Content-Type': 'application/json',
         },

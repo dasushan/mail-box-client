@@ -1,8 +1,14 @@
 import { Card, Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { useRef } from 'react';
-import { Link , useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
+import { useDispatch } from 'react-redux';
+import { authActions } from '../store/auth-slice';
+
 const Login = () => {
-    const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
@@ -12,41 +18,42 @@ const Login = () => {
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
 
-    const signinuri = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBKniczVLNJrXICnBbwj2W29ttGPgAtKCY';
+    const signinuri =
+      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBKniczVLNJrXICnBbwj2W29ttGPgAtKCY';
 
     fetch(signinuri, {
-        method: 'POST',
-        body: JSON.stringify({
-            email: enteredEmail,
-            password: enteredPassword,
-            returnSecureToken: true,
-        }),
-        headers: {
-            'Content-Type' : 'application/json'
-        }
+      method: 'POST',
+      body: JSON.stringify({
+        email: enteredEmail,
+        password: enteredPassword,
+        returnSecureToken: true,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     }).then((res) => {
-        if(res.ok){
-            return res.json().then((data) => {
-                console.log(data)
-                const token = data.idToken;
-                const email = data.email;
-                console.log(token);
-                console.log(email)
-                alert('You have successfully loggedin')
-                navigate('/welcome', {replace: true})
-            })
-        }
-        else{
-            return res.json().then((data) => {
-                let errorMessage = 'Authentication failed!';
-                if(data && data.error && data.error.message){
-                    errorMessage = data.error.message;
-                }
-                alert(errorMessage);
-            })
-        }
-    })
-  }
+      if (res.ok) {
+        return res.json().then((data) => {
+          // console.log(data)
+          // const token = data.idToken;
+          // const email = data.email;
+          // console.log(token);
+          // console.log(email)
+          dispatch(authActions.login(data));
+          alert('You have successfully loggedin');
+          navigate('/welcome', { replace: true });
+        });
+      } else {
+        return res.json().then((data) => {
+          let errorMessage = 'Authentication failed!';
+          if (data && data.error && data.error.message) {
+            errorMessage = data.error.message;
+          }
+          alert(errorMessage);
+        });
+      }
+    });
+  };
   return (
     <Container>
       <Row className="vh-100 d-flex justify-content-center align-items-center">

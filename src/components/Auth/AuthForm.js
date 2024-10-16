@@ -2,7 +2,12 @@ import { useRef } from 'react';
 import { Row, Container, Col, Card, Form, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { useDispatch } from 'react-redux';
+import { authActions } from '../../store/auth-slice';
+
 const AuthForm = () => {
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
 
   const emailInputRef = useRef();
@@ -14,7 +19,7 @@ const AuthForm = () => {
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
    
-    console.log('signup')
+    // console.log('signup')
 
     const signupuri = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBKniczVLNJrXICnBbwj2W29ttGPgAtKCY'
 
@@ -32,8 +37,9 @@ const AuthForm = () => {
       if(res.ok){
         console.log('User has successfully signedup')
         return res.json().then((data) =>{
-          console.log(data);
-          console.log(data.email)
+           // console.log(data);
+          // console.log(data.email)
+          dispatch(authActions.login(data))
           alert('You have succesfully signedup')
           navigate('/signin', {replace: true})
         })

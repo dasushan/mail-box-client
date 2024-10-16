@@ -17,23 +17,23 @@ const Messages = () => {
     ).then((response) => {
       if (response.ok) {
         return response.json().then((res) => {
-          console.log(res.inbox);
-          const data = [];
-          for (const [key, value] of Object.entries(res.inbox)) {
-            data.push(value);
+          // console.log(res.inbox)
+          if (res && res.inbox) {
+            const data = [];
+            for (const [key, value] of Object.entries(res.inbox)) {
+              data.push(value);
+            }
+            console.log(data);
+            dispatch(setEmails(data));
           }
-          console.log(data);
-          dispatch(setEmails(data));
         });
       } else {
       }
     });
   }, []);
-  return(
-    <div>
-      {emails && emails?.map((email) => <Message email={email}/>)}
-    </div>
-  )
+  return (
+    <div>{emails && emails?.map((email) => <Message email={email} />)}</div>
+  );
 };
 
 export default Messages;

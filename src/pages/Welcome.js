@@ -1,11 +1,11 @@
 // import { Container, Row, Col, Button } from 'react-bootstrap';
 import { Outlet } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+
 import Navbar from '../components/Navbar/Navbar';
 import Sidebar from '../components/Sidebar/Sidebar';
 
 const Welcome = () => {
-  const navigate = useNavigate();
+  
 
   return (
     <div
