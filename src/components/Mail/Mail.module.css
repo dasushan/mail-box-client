@@ -1,0 +1,39 @@
+.customTEXTCOLOR700{
+    color: #4a5568;
+}
+.customROUNDEDFULL{
+    border-radius: 1rem;
+}
+.customHOVERBG{
+    transition: background-color 0.1s;
+    background-color: white;
+}
+.customHOVERBG:hover{
+    background-color: #f3f4f6;
+}
+.customHOVERPOINTER{
+    transition: cursor 0.1s;
+}
+.customHOVERPOINTER:hover{
+    cursor: pointer;
+}
+.customHOVERBUTTONBG{
+    border: none;
+    background-color: white;
+    transition: background-color 0.1s;
+}
+.customHOVERBUTTONBG:hover{
+    background-color: #f3f4f6;
+}
+.customBGGRAY200{
+    background-color: #e5e7eb;
+}
+.customBORDERRADIUS{
+    border-radius: 0.5rem;
+}
+.customFONTSIZE{
+    font-size: smaller;
+}
+.customTEXTGRAY400{
+    color: #9ca3af;
+}
