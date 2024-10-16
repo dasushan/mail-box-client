@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     emails: [],
+    sent: [],
     selectedEmail: null
 }
 
@@ -12,11 +13,14 @@ const emailSlice = createSlice({
         setEmails: (state, action) => {
             state.emails = action.payload
         },
+        setSent: (state, action) => {
+            state.sent = action.payload;
+        },
         setSelectedEmail: (state, action) => {
             state.selectedEmail = action.payload;
         }
     }
 })
 
-export const { setEmails, setSelectedEmail } = emailSlice.actions;
+export const { setEmails, setSelectedEmail, setSent } = emailSlice.actions;
 export default emailSlice

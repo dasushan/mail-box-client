@@ -22,10 +22,7 @@ const sidebarItems = [
     icon: <MdOutlineWatchLater style={{ fontSize: '24px' }} />,
     text: 'Snoozed',
   },
-  {
-    icon: <TbSend2 style={{ fontSize: '24px' }} />,
-    text: 'Sent',
-  },
+  
   {
     icon: <MdOutlineDrafts style={{ fontSize: '24px' }} />,
     text: 'Draft',
@@ -62,6 +59,15 @@ const Sidebar = () => {
           <LuPencil style={{ fontSize: '24px' }} />
           Inbox
           <span className={`bg-info px-1 rounded-pill text-dark`}>{count}</span>
+        </div>
+      </div>
+      <div onClick={() => navigate('/welcome/sent')} className={`${classes.customTEXTCOLOR500}`}>
+        <div
+          className={`d-flex align-items-center gap-3  py-1  ${classes.customBORDERRADIUSRIGHT} ${classes.customHOVERPOINTER}  ${classes.customHOVERBG} my-2 mx-4`}
+        >
+          <TbSend2 style={{ fontSize: '24px' }} />
+          Sent
+          
         </div>
       </div>
       <div className={`${classes.customTEXTCOLOR500}`}>

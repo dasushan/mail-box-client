@@ -8,6 +8,7 @@ import PageContainer from './components/RichTextEditor/PageContainer';
 import RichTextEditor from './components/RichTextEditor/RichTextEditor';
 import Inbox from './components/Inbox/Inbox';
 import Mail from './components/Mail/Mail';
+import Sent from './components/Sent/Sent';
 function App() {
   return (
     <BrowserRouter>
@@ -20,6 +21,7 @@ function App() {
           <Route path="editor" element={<TextEditor />} />
           <Route path="email" element={<RichTextEditor />} />
           <Route path='mail/:id' element={<Mail />}/>
+          <Route path="sent" element={<Sent />}/>
         </Route>
       </Routes>
     </BrowserRouter>

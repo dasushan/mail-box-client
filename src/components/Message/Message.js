@@ -2,13 +2,12 @@ import classes from './Message.module.css';
 import { MdCropSquare } from 'react-icons/md';
 import { RiStarLine } from 'react-icons/ri';
 
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector  } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedEmail } from '../../store/email-slice';
 
-
-
 const Message = (props) => {
+  const location = useLocation();
   const navigate = useNavigate();
   const emailId = useSelector((state) => state.auth.emailId);
   const dispatch = useDispatch();
@@ -26,36 +25,65 @@ const Message = (props) => {
       }
     ).then(async (response) => {
       const result = await response.json();
-      // dispatch(setSelectedEmail(props.email));
-      console.log(result.inbox);
-      console.log(selectedEmail);
-      let keY = null;
-      for (const [key, value] of Object.entries(result.inbox)) {
-        if (value.document.id === selectedEmail.document.id) {
-          keY = key;
+      if (location.pathname === '/welcome') {
+        console.log(result.inbox);
+        console.log(selectedEmail);
+        let keY = null;
+        for (const [key, value] of Object.entries(result.inbox)) {
+          if (value.document.id === selectedEmail.document.id) {
+            keY = key;
+          }
         }
+        const oldEmail = result.inbox[keY];
+        console.log(oldEmail);
+        const updatedEmail = {
+          document: oldEmail.document,
+          read: true,
+          sender: oldEmail.sender,
+        };
+        console.log(updatedEmail);
+        fetch(
+          `https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/${email}/inbox/${keY}.json`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedEmail),
+          }
+        );
+        navigate(`/welcome/mail/${props.email.document.id}`);
       }
-      const oldEmail = result.inbox[keY];
-      console.log(oldEmail);
-      const updatedEmail = {
-        document: oldEmail.document,
-        read: true,
-        sender: oldEmail.sender,
-      };
-      console.log(updatedEmail);
-      fetch(
-        `https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/${email}/inbox/${keY}.json`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updatedEmail),
+      if (location.pathname === '/welcome/sent') {
+        console.log(result.sent);
+        console.log(selectedEmail);
+        let keY = null;
+        for (const [key, value] of Object.entries(result.sent)) {
+          if (value.document.id === selectedEmail.document.id) {
+            keY = key;
+          }
         }
-      );
-      navigate(`/welcome/mail/${props.email.document.id}`);
+        const oldEmail = result.sent[keY];
+        console.log(oldEmail);
+        const updatedEmail = { 
+          document: oldEmail.document,
+          read: true,
+          receiver: oldEmail.receiver,
+        };
+        console.log(updatedEmail);
+        fetch(
+          `https://react-backend-app-f330f-default-rtdb.asia-southeast1.firebasedatabase.app/${email}/sent/${keY}.json`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedEmail),
+          }
+        );
+        navigate(`/welcome/mail/${props.email.document.id}`);
+      }
     });
-    // navigate(`/welcome/mail/${props.email.document.id}`);
   };
   return (
     <div
@@ -82,11 +110,9 @@ const Message = (props) => {
         </div>
         <div
           className={`flex-1 ml-4 d-flex align-items-center justify-contet-center `}
-          style={{ height: '2.5rem' }}
+          style={{ height: '2.5rem', width: '40rem' }}
         >
-          <p
-            className={`d-inline-block w-100 text-truncate text-secondary my-auto`}
-          >
+          <p className={`d-inline-block text-truncate text-secondary my-auto`}>
             {props.email.document.message}{' '}
           </p>
         </div>
