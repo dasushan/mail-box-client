@@ -4,6 +4,7 @@ import { setEmails } from '../../store/email-slice';
 import { setSent } from '../../store/email-slice';
 import Message from '../Message/Message';
 import { useLocation } from 'react-router-dom';
+import useFetch from '../../customHooks/useFetch';
 const Messages = () => {
   const location = useLocation();
 
@@ -39,17 +40,18 @@ const Messages = () => {
     }
   }
 
-  useEffect(()=> {
-    // Start polling when the component mounts
-    const interval = setInterval(() => {
-      pollApi();
-      console.log(`pollApi ran`)
-    }, 2000);    // Poll every two seconds
+  // useEffect(()=> {
+  //   // Start polling when the component mounts
+  //   const interval = setInterval(() => {
+  //     pollApi();
+  //     console.log(`pollApi ran`)
+  //   }, 2000);    // Poll every two seconds
     
-    // Cleanup the interval on unmount
-    return () => clearInterval(interval);
-  }, [])
+  //   // Cleanup the interval on unmount
+  //   return () => clearInterval(interval);
+  // }, [])
 
+  useFetch();
 
   useEffect(() => {
     const email = emailId ? emailId.replace(/[@ .]/g, '') : '';
